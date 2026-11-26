@@ -7,8 +7,10 @@
 //   masthead + date + red summary line + region chips,
 //   THREE big feature stories, each with a drawn scene (tariffs, Cairo
 //   fire, Gaza strike), EIGHT more stories, each with a small drawn
-//   scene, then a numbered text-only list of 20 more stories (31 in
-//   all), a UTC day bar, a DATE CHECK strip and a sources footer.
+//   scene, then a numbered text-only list of 14 more stories (25 in
+//   all), a dark numbers strip, a DATE CHECK strip and a fine-print
+//   footer. Masthead and feature headlines use a serif display face
+//   (bold 5x7 glyphs with slab feet); body text stays in the plain face.
 // Every story was first reported on Thursday 26 November 2026 (in some
 // time zone); older stories are named in the DATE CHECK strip as left
 // out. Status badges: CONFIRMED (2+ outlets), OFFICIAL (on the record),
@@ -733,12 +735,12 @@ const MX = 32; // content left edge
 const CW = 960; // content width
 const RX = MX + CW; // content right edge (992)
 
-// Region chips: label + colour. Counts sum to the 31 stories on the page.
+// Region chips: label + colour. Counts sum to the 25 stories on the page.
 const REGIONS: [string, RGB][] = [
-  ["AFRICA 8", AMBER],
-  ["EUROPE 9", PURPLE],
-  ["MIDEAST 5", RED],
-  ["N.AMER 4", BLUE],
+  ["AFRICA 7", AMBER],
+  ["EUROPE 6", PURPLE],
+  ["MIDEAST 4", RED],
+  ["N.AMER 3", BLUE],
   ["S.AMER 1", TEAL],
   ["E.ASIA 1", PINK],
   ["SE.ASIA 2", GREEN],
@@ -771,7 +773,7 @@ const FEATURES: Feature[] = [
   {
     n: "1",
     kicker: "TRADE • WASHINGTON",
-    head: "US SLAPS NEW TARIFFS ON 14 PARTNERS",
+    head: "US HITS 14 PARTNERS WITH NEW TARIFFS",
     deck: "CHINA +20%, EU 15% — MARKETS FALL",
     src: "SOURCES: REUTERS, USTR",
     status: "CONFIRMED",
@@ -810,16 +812,16 @@ function drawFeature(f: Feature, x: number): void {
   fillCircle(x + 9, 285, 9, RED);
   drawTextCentered(x + 9, 278, f.n, 2, WHITE);
   drawTextBold(x + 26, 278, f.kicker, 2, RED);
-  // Headline (bold, up to 3 lines) + deck + sources.
-  drawWrapped(x, 298, f.head, w, 3, INK, true, 2);
-  drawWrapped(x, 366, f.deck, w, 2, INK, false, 1);
-  drawText(x, 400, f.src, 2, FAINT);
+  // Headline (serif, up to 3 lines) + deck + sources.
+  drawWrappedSerif(x, 298, f.head, w, 3, INK, 4);
+  drawWrapped(x, 376, f.deck, w, 2, INK, false, 2);
+  drawText(x, 412, f.src, 2, FAINT);
 }
 
 function drawMasthead(): void {
   drawTextSerifCentered(512, 34, "THE WORLD TODAY", 8, INK);
   hline(MX, 94, CW, 2, INK);
-  drawTextCentered(512, 100, "THURSDAY, 26 NOVEMBER 2026 • 31 STORIES • 8 REGIONS", 2, INK);
+  drawTextSerifCentered(512, 100, "THURSDAY, 26 NOVEMBER 2026 • 25 STORIES • 8 REGIONS", 2, INK);
   drawTextCentered(512, 118, "TARIFFS HIT 14 PARTNERS • 30 DEAD IN CAIRO • HAMAS CHIEF KILLED IN GAZA", 2, RED);
   hline(MX, 138, CW, 3, INK);
   drawRegionChips(146);
@@ -847,18 +849,30 @@ function drawGridCell(c: GridCell, x: number, y: number): void {
   fillCircle(x + 8, y + 69, 8, RED);
   drawTextCentered(x + 8, y + 62, c.n, 2, WHITE);
   drawTextBold(x + 20, y + 62, c.kicker, 2, RED);
-  drawWrapped(x, y + 82, c.head, w, 2, INK, true, 1);
-  drawText(x, y + 114, c.deck, 2, INK);
+  drawWrapped(x, y + 82, c.head, w, 2, INK, true, 3);
+  drawText(x, y + 120, c.deck, 2, INK);
+}
+
+function drawNumbersStrip(y: number): void {
+  // Dark navy band with the day's big numbers (winner anatomy).
+  fillRect(MX, y, CW, 24, NAVY);
+  const label = "THE DAY IN NUMBERS:";
+  const items = "14 TARIFFS • 30 DEAD • 19 KILLED • 9 MINERS • 36% PAY";
+  const total = textWidth(label, 2) + 8 + textWidth(items, 2);
+  let cx = 512 - Math.floor(total / 2);
+  drawTextBold(cx, y + 5, label, 2, FLAME3);
+  cx += textWidth(label, 2) + 8;
+  drawText(cx, y + 5, items, 2, WHITE);
 }
 
 function drawGrid(): void {
-  drawTextBold(MX, 430, "MORE FROM THE DAY — EIGHT STORIES IN PICTURES", 2, INK);
+  drawTextBold(MX, 438, "MORE FROM THE DAY — EIGHT STORIES IN PICTURES", 2, INK);
   for (let i = 0; i < 8; i++) {
     const col = i % 4;
     const row = Math.floor(i / 4);
-    drawGridCell(GRID[i], MX + col * 243, 450 + row * 138);
+    drawGridCell(GRID[i], MX + col * 243, 458 + row * 138);
   }
-  drawTextCentered(512, 724, "CONFIRMED 2+ OUTLETS • OFFICIAL ON RECORD • REPORTED 1 OUTLET • CLAIM 1 SIDE", 2, INK);
+  drawNumbersStrip(732);
 }
 
 // Text-only briefs, numbered 12-31. Each line fits its column at scale 2.
@@ -877,32 +891,26 @@ const BRIEFS: string[] = [
   "UN PULLS EBOLA STAFF FROM CONGO",
   "MILITANTS KILL 30+ IN NIGER STATE",
   "IRAN READY TO WITHSTAND BLOCKADE",
-  "ITALY JAILED 57 PRIESTS SINCE 2001",
-  "NIGERIA SEIZES $227M METH, 5 HELD",
-  "NATO INTERN HELD IN BELGIUM SPY CASE",
-  "THANKSGIVING: US MARKETS SHUT",
-  "EU RULES ON CAGED ANIMALS",
-  "CAIRO FIRE TOLL RISES TO 31",
 ];
 
 function drawBriefs(): void {
-  drawTextBold(MX, 754, "ALSO ON 26 NOVEMBER", 2, RED);
-  drawText(RX - textWidth("STORIES 12-31", 2), 754, "STORIES 12-31", 2, FAINT);
+  drawTextBold(MX, 766, "ALSO ON 26 NOVEMBER", 2, RED);
+  drawText(RX - textWidth("STORIES 12-25", 2), 766, "STORIES 12-25", 2, FAINT);
   for (let i = 0; i < BRIEFS.length; i++) {
-    const col = i < 10 ? 0 : 1;
-    const row = i % 10;
+    const col = i < 7 ? 0 : 1;
+    const row = i % 7;
     const x = col === 0 ? MX : 512;
-    const y = 774 + row * 14;
+    const y = 786 + row * 19;
     drawTextBold(x, y, `${12 + i}.`, 2, RED);
     drawText(x + 40, y, BRIEFS[i], 2, INK);
   }
 }
 
 function drawDateCheck(): void {
-  rectOutline(MX, 920, CW, 54, 2, RED);
-  drawTextCentered(512, 926, "DATE CHECK — EVERY STORY HERE HAPPENED OR WAS FIRST REPORTED ON THU 26 NOV 2026.", 2, INK);
-  drawTextCentered(512, 941, "IN ANY TIME ZONE. THE DAY'S BIG STORIES BROKE LATE WEDNESDAY IN THE WEST.", 2, INK);
-  drawTextCentered(512, 956, "LEFT OUT: CIA BREACH (24 NOV) • RUSSIA LEAK (24 NOV) • NORWAY OIL (13 NOV)", 2, RED);
+  rectOutline(MX, 922, CW, 56, 2, RED);
+  drawTextCentered(512, 928, "DATE CHECK — EVERY STORY HERE HAPPENED OR WAS FIRST REPORTED ON THU 26 NOV 2026.", 2, INK);
+  drawTextCentered(512, 945, "IN ANY TIME ZONE. THE DAY'S BIG STORIES BROKE LATE WEDNESDAY IN THE WEST.", 2, INK);
+  drawTextCentered(512, 962, "LEFT OUT: CIA BREACH (24 NOV) • RUSSIA LEAK (24 NOV) • NORWAY OIL (13 NOV)", 2, RED);
 }
 
 // ---------------------------------------------------------------- page
@@ -911,12 +919,12 @@ function drawPage(): void {
   rectOutline(14, 14, W - 28, H - 28, 4, INK);
   rectOutline(22, 22, W - 44, H - 44, 2, INK);
   drawMasthead();
-  hline(MX, 422, CW, 2, INK);
+  hline(MX, 430, CW, 2, INK);
   drawGrid();
-  hline(MX, 746, CW, 2, INK);
+  hline(MX, 760, CW, 2, INK);
   drawBriefs();
   drawDateCheck();
-  drawTextCentered(512, 982, "SOURCES: REUTERS • AP • AFP • KCNA • XINHUA • BBC", 2, FAINT);
+  drawTextCentered(512, 984, "SOURCES: REUTERS • AP • AFP • KCNA • XINHUA • BBC — HOW SURE: REPORTED, DAY'S WIRES OR OFFICIALS • CLAIM, ONE SIDE'S ACCOUNT • ONGOING, STILL UNFOLDING", 1, FAINT);
 }
 
 // ---------------------------------------------------------------- main

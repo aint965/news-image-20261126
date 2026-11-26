@@ -5,12 +5,16 @@
 [![reward](https://make.fun/badge/news-image-20261126/aint965/news-image-20261126/reward.svg)](https://make.fun/bounty/news-image-20261126?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261126)
 
 A program that draws a classic newspaper front page summing up the world
-news of **Thursday 26 November 2026** and writes it as a 1024×1024 PNG.
+news of **Thursday 26 November 2026** — 25 stories across 8 regions —
+and writes it as a 1024×1024 PNG.
 
 `main.ts` (Node 22, standard library only, no network) renders the whole
-page in code — an embedded 5×7 bitmap font, a hand-written PNG encoder
-(CRC32 + zlib deflate) — and is fully deterministic: two runs write
-byte-identical output.
+page in code — an embedded 5×7 bitmap font with a serif display face
+(bold glyphs with slab feet) for the masthead and headlines, a hand-written
+PNG encoder (CRC32 + zlib deflate) — and is fully deterministic: two runs
+write byte-identical output. Layout: 3 illustrated leads, 8 illustrated
+stories, 14 text briefs, a "THE DAY IN NUMBERS" strip and a DATE CHECK
+strip naming stories left out for being older than the day.
 
 ## The stories
 
@@ -31,9 +35,12 @@ public hearing 25 January; markets fell.
 - **North Korea** — North Korea expels a Swiss diplomat in a sanctions row.
 - **Indonesia** — Nine miners dead after flooding at a gold mine.
 
-**Footer:** Bangladesh raises garment workers' pay by 36%. Malaysia sues
-Google for $146m over YouTube content. Britain moves military aircraft
-over drone threats. Thanksgiving Day in the United States.
+**Also on the page:** Bangladesh raises garment workers' pay by 36%.
+Malaysia sues Google for $146m over YouTube content. Britain moves
+military aircraft over drone threats. A "THE DAY IN NUMBERS" strip
+(14 tariffs, 30 dead in Cairo, 19 killed in Sudan, 9 miners, 36% pay)
+and a DATE CHECK strip naming stories left out for being older than
+the day.
 
 All stories were first reported Thursday 26 November 2026.
 
