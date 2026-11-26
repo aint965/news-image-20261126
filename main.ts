@@ -260,6 +260,71 @@ function drawTextCentered(cx: number, y: number, s: string, scale: number, c: RG
 function drawTextCenteredBold(cx: number, y: number, s: string, scale: number, c: RGB): void {
   drawTextBold(cx - Math.floor(textWidth(s, scale) / 2), y, s, scale, c);
 }
+// Serif display face (cheap): the 5x7 glyphs drawn bold, plus a foot on
+// the bottom row — each run of the bottom row widened by one cell on each
+// side, so stems end in small slab feet and each line of display text
+// sits on a thin baseline rule, like a newspaper headline face. Advance
+// is 7*scale so neighbouring feet just meet.
+function drawGlyphSerif(x: number, y: number, ch: string, scale: number, c: RGB): void {
+  const g = FONT[ch] ?? BLANK;
+  for (const ox of [0, 1]) {
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 5; col++) {
+        if ((g[row] >> (4 - col)) & 1) fillRect(x + ox + col * scale, y + row * scale, scale, scale, c);
+      }
+    }
+  }
+  const bot = g[6];
+  if (bot) {
+    let col = 0;
+    while (col < 5) {
+      if ((bot >> (4 - col)) & 1) {
+        let end = col;
+        while (end + 1 < 5 && ((bot >> (4 - (end + 1))) & 1)) end++;
+        fillRect(x + (col - 1) * scale, y + 6 * scale, (end - col + 3) * scale, scale, c);
+        col = end + 1;
+      } else col++;
+    }
+  }
+}
+function textWidthSerif(s: string, scale: number): number {
+  if (s.length === 0) return 0;
+  return s.length * 7 * scale - scale;
+}
+function drawTextSerif(x: number, y: number, s: string, scale: number, c: RGB): void {
+  let cx = x;
+  for (const ch of s) {
+    drawGlyphSerif(cx, y, ch, scale, c);
+    cx += 7 * scale;
+  }
+}
+function drawTextSerifCentered(cx: number, y: number, s: string, scale: number, c: RGB): void {
+  drawTextSerif(cx - Math.floor(textWidthSerif(s, scale) / 2), y, s, scale, c);
+}
+function wrapSerif(s: string, maxWidth: number, scale: number): string[] {
+  const words = s.split(" ");
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    const trial = cur === "" ? w : cur + " " + w;
+    if (textWidthSerif(trial, scale) <= maxWidth) cur = trial;
+    else {
+      if (cur !== "") lines.push(cur);
+      cur = w;
+    }
+  }
+  if (cur !== "") lines.push(cur);
+  return lines;
+}
+function drawWrappedSerif(x: number, y: number, s: string, maxWidth: number, scale: number, c: RGB, gap: number): number {
+  const lines = wrapSerif(s, maxWidth, scale);
+  let yy = y;
+  for (const ln of lines) {
+    drawTextSerif(x, yy, ln, scale, c);
+    yy += 7 * scale + gap;
+  }
+  return yy;
+}
 // Greedy word wrap; returns lines that fit maxWidth. Never splits a word.
 function wrap(s: string, maxWidth: number, scale: number): string[] {
   const words = s.split(" ");
@@ -752,7 +817,7 @@ function drawFeature(f: Feature, x: number): void {
 }
 
 function drawMasthead(): void {
-  drawTextCenteredBold(512, 34, "THE WORLD TODAY", 8, INK);
+  drawTextSerifCentered(512, 34, "THE WORLD TODAY", 8, INK);
   hline(MX, 94, CW, 2, INK);
   drawTextCentered(512, 100, "THURSDAY, 26 NOVEMBER 2026 • 31 STORIES • 8 REGIONS", 2, INK);
   drawTextCentered(512, 118, "TARIFFS HIT 14 PARTNERS • 30 DEAD IN CAIRO • HAMAS CHIEF KILLED IN GAZA", 2, RED);
