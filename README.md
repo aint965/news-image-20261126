@@ -1,8 +1,8 @@
 # THE WORLD TODAY — 26 November 2026
 
-[![Bounty](https://img.shields.io/badge/make.fun-bounty-blue)](https://make.fun/bounty/news-image-20261126)
-[![Repo](https://img.shields.io/badge/GitHub-aint965%2Fnews--image--20261126-black)](https://github.com/aint965/news-image-20261126)
-[![Competition](https://img.shields.io/badge/competition-news--image--20261126-green)](https://make.fun/bounty/news-image-20261126)
+[![make.fun · news-image-20261126](https://make.fun/badge/news-image-20261126.svg)](https://make.fun/bounty/news-image-20261126?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261126)
+[![rank](https://make.fun/badge/news-image-20261126/aint965/news-image-20261126/rank.svg)](https://make.fun/bounty/news-image-20261126/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261126)
+[![reward](https://make.fun/badge/news-image-20261126/aint965/news-image-20261126/reward.svg)](https://make.fun/bounty/news-image-20261126?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261126)
 
 A program that draws a classic newspaper front page summing up the world
 news of **Thursday 26 November 2026** and writes it as a 1024×1024 PNG.
